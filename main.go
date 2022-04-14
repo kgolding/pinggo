@@ -13,6 +13,7 @@ import (
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
@@ -57,7 +58,7 @@ func main() {
 	a.win = a.app.NewWindow("PingGo")
 	a.win.SetIcon(resIconPng)
 	a.win.SetContent(a.mainWindow())
-	a.win.Resize(fyne.NewSize(550, 600))
+	a.win.Resize(fyne.NewSize(550, 500))
 	a.win.CenterOnScreen()
 
 	a.win.ShowAndRun()
@@ -219,11 +220,11 @@ func (a *App) mainWindow() fyne.CanvasObject {
 	)
 
 	// Set the grid cells to be wide enough for a long IP address
-	ts := fyne.MeasureText("MMM.MMM.MMM.MMM", theme.TextSize(), a.wStatus.TextStyle)
+	ts := fyne.MeasureText("X666.666.666.666X", theme.TextSize(), a.wStatus.TextStyle)
 	ts.Height += theme.Padding() * 3
 
 	a.cResults = fyne.NewContainerWithLayout(
-		layout.NewGridWrapLayout(ts),
+		NewGridWrapJustifiedLayout(ts),
 	)
 
 	// Auto select the first network, which in turn triggers scanning
@@ -235,7 +236,9 @@ func (a *App) mainWindow() fyne.CanvasObject {
 		layout.NewBorderLayout(
 			top, bottom, nil, nil,
 		),
-		top, bottom, a.cResults,
+		top,
+		bottom,
+		container.NewScroll(a.cResults),
 	)
 }
 
