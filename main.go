@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net"
 	"os/exec"
+	"runtime"
 	"sort"
 	"sync"
 	"time"
@@ -267,8 +268,11 @@ func (a *App) startScan(ctx context.Context, ipList []net.IP) ([]*IPInfo, error)
 				progressMutex.Unlock()
 				wg.Done()
 			}()
-
-			cmd := exec.CommandContext(ctx, "ping", "-w", "1", "-c", "1", ip.String())
+			args := []string{"-w", "1", "-c", "1", ip.String()}
+			if runtime.GOOS == "windows" {
+				args = []string{"-w", "1000", "-n", "1", ip.String()}
+			}
+			cmd := exec.CommandContext(ctx, "ping", args...)
 			_, err := cmd.Output()
 			if err != nil {
 				if _, ok := err.(*exec.ExitError); ok {
