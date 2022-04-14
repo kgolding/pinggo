@@ -55,6 +55,7 @@ func main() {
 		autoscan: true,
 	}
 	a.win = a.app.NewWindow("PingGo")
+	a.win.SetIcon(resIconPng)
 	a.win.SetContent(a.mainWindow())
 	a.win.Resize(fyne.NewSize(550, 600))
 	a.win.CenterOnScreen()
@@ -160,6 +161,8 @@ func (a *App) Scan() {
 
 		a.cResults.Refresh()
 		if autoscan {
+			// Have a break before starting the next scan
+			time.Sleep(time.Millisecond * 100)
 			a.Scan()
 		}
 	}()
@@ -173,7 +176,7 @@ func (a *App) mainWindow() fyne.CanvasObject {
 		a.Clear()
 		a.Scan()
 	})
-	// WHilst this is never seen, it ensures the widget is wider
+	// Whilst this is never seen, it ensures the widget is wider
 	wSelectNet.PlaceHolder = "-- Select network -- "
 
 	a.wScan = widget.NewButton("Scan", func() {
@@ -223,7 +226,7 @@ func (a *App) mainWindow() fyne.CanvasObject {
 		layout.NewGridWrapLayout(ts),
 	)
 
-	// Auto select the first network, which triggers scanning
+	// Auto select the first network, which in turn triggers scanning
 	if len(nets) > 0 {
 		wSelectNet.SetSelectedIndex(0)
 	}
